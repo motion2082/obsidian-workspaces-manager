@@ -227,7 +227,7 @@ export default class WorkspacesPlus extends Plugin {
     statusBarItem.setAttribute("aria-label-position", "top");
     // create the status bar icon
     const icon = statusBarItem.createSpan("status-bar-item-segment icon");
-    modalType == "workspace" ? setIcon(icon, "pane-layout") : setIcon(icon, "gear"); // inject svg icon
+    if (modalType == "workspace") setIcon(icon, "pane-layout"); else setIcon(icon, "gear"); // inject svg icon
     // create the status bar text
     const modeText = this.utils.getActiveModeDisplayName();
     statusBarItem.createSpan({
@@ -247,7 +247,7 @@ export default class WorkspacesPlus extends Plugin {
     if (!this.isNativePluginEnabled) return;
     // handle the shift click to save current workspace shortcut
     if (evt.shiftKey === true) {
-      modalType == "mode" ? this.utils.saveActiveMode() : this.utils.saveActiveWorkspace();
+      if (modalType == "mode") this.utils.saveActiveMode(); else this.utils.saveActiveWorkspace();
       // why trigger here?
       // this.app.workspace.trigger("layout-change");
       this.registerWorkspaceHotkeys();
@@ -407,11 +407,11 @@ export default class WorkspacesPlus extends Plugin {
       } else {
         combinedSettings = this.mergeGlobalSettings();
         if (this.debug) console.log("loading default settings", combinedSettings);
-        settings && (settings["mode"] = null);
+        if (settings) settings["mode"] = null;
       }
       if (this.settings.systemDarkMode) this.utils.updateDarkModeFromOS(combinedSettings);
 
-      this.needsReload(combinedSettings) && this.reloadIfNeeded();
+      if (this.needsReload(combinedSettings)) this.reloadIfNeeded();
       this.applySettings(combinedSettings);
     }
     if (settings) this.utils.updateFoldState(settings);

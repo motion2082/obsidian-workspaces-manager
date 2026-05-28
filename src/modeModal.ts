@@ -128,7 +128,8 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     }
     evt.preventDefault();
     const item = this.chooser.suggestions.indexOf(itemEl);
-    this.chooser.setSelectedItem(item), this.useSelectedItem(evt);
+    this.chooser.setSelectedItem(item);
+    this.useSelectedItem(evt);
   };
 
   onSuggestionMouseover = function (evt: MouseEvent | KeyboardEvent, itemEl: HTMLElement) {
@@ -340,7 +341,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     if (evt.shiftKey && !evt.altKey) modifiers = "Shift";
     else if (evt.altKey && !evt.shiftKey) modifiers = "Alt";
     else modifiers = "";
-    if (modifiers === "Shift") this.saveAndStay(), this.close();
+    if (modifiers === "Shift") { this.saveAndStay(); this.close(); }
     else this.loadWorkspace("Mode: " + item);
   }
 

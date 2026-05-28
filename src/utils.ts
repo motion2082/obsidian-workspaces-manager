@@ -64,11 +64,11 @@ export default class Utils {
   }
 
   saveActiveMode (): void {
-    this.activeModeName && this.workspacePlugin.saveWorkspace(this.activeModeName);
+    if (this.activeModeName) this.workspacePlugin.saveWorkspace(this.activeModeName);
   }
 
   saveActiveWorkspace () {
-    this.activeWorkspace && this.workspacePlugin.saveWorkspace(this.activeWorkspace);
+    if (this.activeWorkspace) this.workspacePlugin.saveWorkspace(this.activeWorkspace);
   }
 
   getActiveModeDisplayName () {
@@ -110,14 +110,14 @@ export default class Utils {
     if (workspaceSettings?.mode === modeName) {
       workspaceSettings.mode = null;
     } else {
-      workspaceSettings && (workspaceSettings.mode = modeName);
+      if (workspaceSettings) workspaceSettings.mode = modeName;
     }
     // load the mode's sidebar layouts, if enabled
     if (modeSettings?.saveSidebar && workspaceSettings.mode) {
-      mode && this.mergeSidebarLayout(mode);
+      if (mode) this.mergeSidebarLayout(mode);
       this.updateFoldState(modeSettings);
     } else {
-      workspace && this.mergeSidebarLayout(workspace);
+      if (workspace) this.mergeSidebarLayout(workspace);
       this.updateFoldState(workspaceSettings);
     }
     this.workspacePlugin.saveData(); // call saveData on the workspace plugin to persist the workspace metadata to disk

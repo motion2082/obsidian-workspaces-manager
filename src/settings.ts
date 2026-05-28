@@ -127,11 +127,11 @@ export class WorkspacesPlusSettingsTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName(
         createFragment(function (e) {
-          e.appendText("Workspace Modes"),
-            e.createSpan({
-              cls: "flair mod-pop",
-              text: "beta",
-            });
+          e.appendText("Workspace Modes");
+          e.createSpan({
+            cls: "flair mod-pop",
+            text: "beta",
+          });
         })
       )
       .setDesc(
