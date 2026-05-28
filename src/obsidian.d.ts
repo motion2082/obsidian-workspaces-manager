@@ -1,5 +1,4 @@
 import "obsidian";
-import { Plugin } from "obsidian";
 
 declare module "obsidian" {
   export interface FuzzySuggestModal<T> {
@@ -25,8 +24,8 @@ declare module "obsidian" {
     readConfigJson(section: string): Promise<any>;
     saveConfig(): void;
     exists(path: string): Promise<boolean>;
-    writeJson(fileName: string, workspaceMetadata: Object, prettyPrint: boolean): Promise<void>;
-    config: Object;
+    writeJson(fileName: string, workspaceMetadata: object, prettyPrint: boolean): Promise<void>;
+    config: object;
   }
   export interface Vault extends Events {
     on(name: "config-changed", callback: () => any): EventRef;
@@ -37,7 +36,7 @@ declare module "obsidian" {
     internalPlugins: InternalPlugins;
     viewRegistry: ViewRegistry;
     loadLocalStorage(setting: string): any;
-    saveLocalStorage(setting: string, values: Object): void;
+    saveLocalStorage(setting: string, values: object): void;
     getTheme(): string;
     changeBaseFontSize(fontSize: number): void;
     changeTheme(theme: string): void;

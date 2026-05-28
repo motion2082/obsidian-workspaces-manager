@@ -15,7 +15,7 @@ export class ConfirmationModal extends Modal {
 
     this.contentEl.createEl("h3", { text: title });
 
-    let e: HTMLParagraphElement = this.contentEl.createEl("p", { text });
+    const e: HTMLParagraphElement = this.contentEl.createEl("p", { text });
     e.id = "workspace-delete-confirm-dialog";
 
     this.contentEl.createDiv("modal-button-container", buttonsEl => {

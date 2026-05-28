@@ -4,9 +4,6 @@ import {
   setIcon,
   Notice,
   debounce,
-  normalizePath,
-  TFile,
-  MarkdownView,
 } from "obsidian";
 import { WorkspacesPlusSettings, WorkspacesPlusSettingsTab, DEFAULT_SETTINGS } from "./settings";
 import { WorkspacesPlusPluginWorkspaceModal } from "./workspaceModal";
@@ -97,7 +94,7 @@ export default class WorkspacesPlus extends Plugin {
 
   onunload(): void {
     if (this.settings.workspaceSettings) {
-      let combinedSettings = this.mergeGlobalSettings();
+      const combinedSettings = this.mergeGlobalSettings();
       this.applySettings(combinedSettings);
     }
     delete document.body.dataset.workspaceMode;
@@ -212,7 +209,7 @@ export default class WorkspacesPlus extends Plugin {
 
   disableModesFeature() {
     this.app.vault.off("config-changed", this.onConfigChange);
-    let combinedSettings = this.mergeGlobalSettings();
+    const combinedSettings = this.mergeGlobalSettings();
     this.applySettings(combinedSettings);
     this.statusBarMode?.detach();
     this.statusBarMode = null;
@@ -232,7 +229,7 @@ export default class WorkspacesPlus extends Plugin {
     const icon = statusBarItem.createSpan("status-bar-item-segment icon");
     modalType == "workspace" ? setIcon(icon, "pane-layout") : setIcon(icon, "gear"); // inject svg icon
     // create the status bar text
-    let modeText = this.utils.getActiveModeDisplayName();
+    const modeText = this.utils.getActiveModeDisplayName();
     statusBarItem.createSpan({
       cls: "status-bar-item-segment name",
       text: !this.isNativePluginEnabled
@@ -342,9 +339,9 @@ export default class WorkspacesPlus extends Plugin {
 
   updateCMenuIcon(name: string, oldName: string) {
     const cMenuPlugin = this.app.plugins.plugins["cmenu-plugin"];
-    let cMenuItemIdx = cMenuPlugin?.settings.menuCommands.findIndex(cmd => cmd.id === `${this.manifest.id}:${oldName}`);
+    const cMenuItemIdx = cMenuPlugin?.settings.menuCommands.findIndex(cmd => cmd.id === `${this.manifest.id}:${oldName}`);
     if (!cMenuPlugin || cMenuItemIdx === -1) return;
-    let cMenuItems = cMenuPlugin.settings.menuCommands;
+    const cMenuItems = cMenuPlugin.settings.menuCommands;
     cMenuItems[cMenuItemIdx].id = `${this.manifest.id}:${name}`;
     cMenuItems[cMenuItemIdx].name = `${this.manifest.name}: Load: ${name}`;
     cMenuPlugin.saveSettings();
@@ -374,7 +371,7 @@ export default class WorkspacesPlus extends Plugin {
     if (this.settings.workspaceSettings && this.utils.isMode(workspaceName)) {
       customSettings.app = this.app.vault.config;
     }
-    let explorerFoldState = await this.app.loadLocalStorage("file-explorer-unfold");
+    const explorerFoldState = await this.app.loadLocalStorage("file-explorer-unfold");
     if (explorerFoldState) customSettings.explorerFoldState = explorerFoldState;
     this.workspacePlugin.saveData();
   };
@@ -434,6 +431,7 @@ export default class WorkspacesPlus extends Plugin {
     const isEnabled = (this.app.vault.config as any).livePreview;
     if (isEnabled != isLoaded) {
       (this.app.workspace as any).saveLayout().then(async () => {
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           await sleep(100);
           if (this.app.workspace.layoutReady) {
@@ -497,6 +495,7 @@ export default class WorkspacesPlus extends Plugin {
 
   installWorkspaceHooks() {
     // patch the internal workspaces plugin to emit events on save, delete, and load
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const plugin = this;
     this.register(
       around(this.workspacePlugin, {
@@ -504,8 +503,7 @@ export default class WorkspacesPlus extends Plugin {
           return function saveWorkspace(workspaceName, ...etc) {
             // TODO: Does this prevent saving a workspace with no name?
             if (!workspaceName || !plugin.isNativePluginEnabled) return;
-            let settings;
-            settings = plugin.utils.getWorkspaceSettings(workspaceName);
+            const settings = plugin.utils.getWorkspaceSettings(workspaceName);
             const result = old.call(this, workspaceName, ...etc);
             if (plugin.debug) console.log("workspace saved: " + workspaceName);
             this.app.workspace.trigger("workspace-save", workspaceName, settings);
@@ -527,7 +525,7 @@ export default class WorkspacesPlus extends Plugin {
             let result;
             if (plugin.settings.workspaceSettings && plugin.utils.isMode(workspaceName)) {
               // if the workspace being loaded is a mode, invoke the mode loader
-              let modeName = workspaceName;
+              const modeName = workspaceName;
               workspaceName = plugin.utils.activeWorkspace;
               result = plugin.utils.loadMode(workspaceName, modeName);
             } else {

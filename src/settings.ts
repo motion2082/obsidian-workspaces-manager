@@ -2,7 +2,6 @@ import WorkspacesPlus from "./main";
 import { App, PluginSettingTab, Setting, setIcon } from "obsidian";
 import { FileSuggest } from "./suggesters/fileSuggest";
 
-const SETTINGS_ATTR = "workspaces-plus:settings-v1";
 export class WorkspacesPlusSettings {
   showInstructions: boolean;
   showDeletePrompt: boolean;
@@ -10,7 +9,7 @@ export class WorkspacesPlusSettings {
   saveOnChange: boolean;
   workspaceSettings: boolean;
   systemDarkMode: boolean;
-  globalSettings: Object;
+  globalSettings: object;
   activeWorkspaceDesktop: string;
   activeWorkspaceMobile: string;
   reloadLivePreview: boolean;
@@ -200,7 +199,7 @@ export class WorkspacesPlusSettingsTab extends PluginSettingTab {
       text: "Per Workspace Settings",
     });
 
-    let { workspaces } = this.plugin.workspacePlugin;
+    const { workspaces } = this.plugin.workspacePlugin;
     Object.entries(workspaces).forEach(entry => {
       const [workspaceName, workspace] = entry;
       const workspaceSettings = this.plugin.utils.getWorkspaceSettings(workspaceName);
@@ -287,7 +286,7 @@ export class WorkspacesPlusSettingsTab extends PluginSettingTab {
       .addClass("requires-workspace-modes");
 
     Object.entries(workspaces).forEach(entry => {
-      const [modeName, mode] = entry;
+      const [modeName, _mode] = entry;
       if (!this.plugin.utils.isMode(modeName)) return;
       const modeSettings = this.plugin.utils.getModeSettings(modeName);
 

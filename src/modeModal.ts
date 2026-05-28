@@ -1,4 +1,4 @@
-import { App, Modal, FuzzySuggestModal, WorkspacePluginInstance, FuzzyMatch, Notice, Scope } from "obsidian";
+import { FuzzySuggestModal, WorkspacePluginInstance, FuzzyMatch, Notice, Scope } from "obsidian";
 import { createPopper, Instance as PopperInstance } from "@popperjs/core";
 import { WorkspacesPlusSettings } from "./settings";
 import { createConfirmationDialog } from "./confirm";
@@ -82,8 +82,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
 
   buildInstructions(): void {
     if (this.settings.showInstructions || this.invokedViaHotkey) {
-      let instructions;
-      instructions = [
+      const instructions = [
         {
           command: "↵",
           purpose: "load",
@@ -128,12 +127,12 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
       return;
     }
     evt.preventDefault();
-    let item = this.chooser.suggestions.indexOf(itemEl);
+    const item = this.chooser.suggestions.indexOf(itemEl);
     this.chooser.setSelectedItem(item), this.useSelectedItem(evt);
   };
 
   onSuggestionMouseover = function (evt: MouseEvent | KeyboardEvent, itemEl: HTMLElement) {
-    let item = this.chooser.suggestions.indexOf(itemEl);
+    const item = this.chooser.suggestions.indexOf(itemEl);
     this.chooser.setSelectedItem(item);
   };
 
@@ -153,7 +152,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
   onOpen(): void {
     super.onOpen();
     this.activeWorkspace = this.workspacePlugin.activeWorkspace;
-    let selectedIdx = this.getItems().findIndex(workspace => workspace === this.activeWorkspace);
+    const selectedIdx = this.getItems().findIndex(workspace => workspace === this.activeWorkspace);
     this.chooser.setSelectedItem(selectedIdx);
     this.chooser.suggestions[this.chooser.selectedItem]?.scrollIntoViewIfNeeded();
   }
@@ -170,9 +169,9 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     const newName = "Mode: " + targetEl.textContent;
     // let settings = this.workspacePlugin.workspaces[this.workspacePlugin.activeWorkspace][SETTINGS_ATTR];
     // let currentMode = settings["mode"] ? settings["mode"] : null;
-    for (const [workspaceName, workspace] of Object.entries(this.workspacePlugin.workspaces)) {
-      let settings = workspace[SETTINGS_ATTR];
-      let mode = settings ? settings["mode"] : null;
+    for (const [_workspaceName, workspace] of Object.entries(this.workspacePlugin.workspaces)) {
+      const settings = workspace[SETTINGS_ATTR];
+      const mode = settings ? settings["mode"] : null;
       if (mode && mode == originalName) {
         workspace[SETTINGS_ATTR]["mode"] = newName;
       }
@@ -185,7 +184,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     }
     this.chooser.chooser.updateSuggestions();
     targetEl.contentEditable = "false";
-    let selectedIdx = this.getItems().findIndex((workspace: string) => workspace === newName);
+    const selectedIdx = this.getItems().findIndex((workspace: string) => workspace === newName);
     this.chooser.setSelectedItem(selectedIdx, true);
     this.app.workspace.trigger("workspace-rename", newName, originalName);
   }
@@ -196,18 +195,18 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
       this.handleRename(targetEl);
       return;
     }
-    let workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
+    const workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
     if (!this.values && workspaceName && evt.shiftKey) {
       this.saveAndStay();
       this.close();
       return false;
     } else if (!this.chooser.values) return false;
-    let item = this.chooser.values ? this.chooser.values[this.chooser.selectedItem] : workspaceName;
+    const item = this.chooser.values ? this.chooser.values[this.chooser.selectedItem] : workspaceName;
     return void 0 !== item && (this.selectSuggestion(item, evt), true);
   };
 
   saveAndStay(): void {
-    let workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
+    const workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
     this.workspacePlugin.saveWorkspace("Mode: " + workspaceName);
     this.chooser.chooser.updateSuggestions();
     new Notice("Successfully saved mode: " + workspaceName);
@@ -215,11 +214,11 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
 
   deleteWorkspace(workspaceName: string = null): void {
     if (!workspaceName) {
-      let currentSelection = this.chooser.selectedItem;
+      const currentSelection = this.chooser.selectedItem;
       workspaceName = this.chooser.values[currentSelection].item;
     }
     if (this.settings.showDeletePrompt) {
-      const confirmEl = createConfirmationDialog(this.app, {
+      createConfirmationDialog(this.app, {
         cta: "Delete",
         onAccept: async () => {
           this.doDelete("Mode: " + workspaceName);
@@ -258,7 +257,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
         /^mode: /i,
         ""
       );
-    } catch {}
+    } catch { /* empty */ }
     if (childEl.textContent === mode) {
       const activeIcon = wrapperEl.createDiv("active-workspace");
       activeIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="none" d="M0 0h24v24H0z"/><path d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z"/></svg>`;
@@ -309,14 +308,14 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
   };
 
   doDelete(workspaceName: string): void {
-    let currentSelection = this.chooser.selectedItem;
+    const currentSelection = this.chooser.selectedItem;
     this.workspacePlugin.deleteWorkspace(workspaceName);
     this.chooser.chooser.updateSuggestions();
     this.chooser.setSelectedItem(currentSelection - 1, true);
     this.plugin.onWorkspaceDelete(workspaceName);
     for (const [workspaceName, workspace] of Object.entries(this.workspacePlugin.workspaces)) {
-      let settings = workspace[SETTINGS_ATTR];
-      let mode = settings ? settings["mode"] : null;
+      const settings = workspace[SETTINGS_ATTR];
+      const mode = settings ? settings["mode"] : null;
       if (mode && mode == workspaceName) {
         workspace[SETTINGS_ATTR]["mode"] = null;
       }

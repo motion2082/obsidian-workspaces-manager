@@ -1,4 +1,3 @@
-import { settings } from "cluster";
 // import type moment from "moment";
 import type { Moment } from "moment";
 import { WorkspacePluginInstance, App, normalizePath, TFile } from "obsidian";
@@ -182,11 +181,11 @@ export default class Utils {
   }
 
   async applyFileOverrides (workspaceName: string, workspace: any): Promise<void> {
-    let workspaceSettings = this.getWorkspaceSettings(workspaceName);
+    const workspaceSettings = this.getWorkspaceSettings(workspaceName);
     if (workspaceSettings?.fileOverrides) {
       await Promise.all(
         Object.entries(workspaceSettings.fileOverrides).map(async ([leafId, fileName]: [string, string]) => {
-          let parsedFileName = this.renderTemplateString(fileName);
+          const parsedFileName = this.renderTemplateString(fileName);
 
           await this.getPeriodicNoteFromPath(parsedFileName);
           const file = this.app.vault.getAbstractFileByPath(normalizePath(parsedFileName)) as TFile;
@@ -232,8 +231,8 @@ export default class Utils {
   // Template string rendering with math. Credit to Liam Cain https://github.com/liamcain/obsidian-daily-notes-interface
   renderTemplateString (text: string) {
     const templateOptions = (<any>window).app.internalPlugins.getPluginById("templates").instance.options;
-    let dateFormat = (templateOptions && templateOptions.dateFormat) || "YYYY-MM-DD";
-    let timeFormat = (templateOptions && templateOptions.timeFormat) || "HH:mm";
+    const dateFormat = (templateOptions && templateOptions.dateFormat) || "YYYY-MM-DD";
+    const timeFormat = (templateOptions && templateOptions.timeFormat) || "HH:mm";
     const date = window.moment();
     return (text = text
       .replace(
