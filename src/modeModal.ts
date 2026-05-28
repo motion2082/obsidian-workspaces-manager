@@ -4,7 +4,7 @@ import { WorkspacesPlusSettings } from "./settings";
 import { createConfirmationDialog } from "./confirm";
 import WorkspacesPlus from "./main";
 
-const SETTINGS_ATTR = "workspaces-plus:settings-v1";
+const SETTINGS_ATTR = "workspaces-manager:settings-v1";
 export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
   workspacePlugin: WorkspacePluginInstance;
   activeWorkspace: string;
@@ -32,7 +32,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     // that apply a background to the modal container instead of the modal-bg
     this.bgEl.parentElement.setAttribute("style", "background-color: transparent !important");
 
-    this.modalEl.classList.add("workspaces-plus-mode-modal");
+    this.modalEl.classList.add("workspaces-manager-mode-modal");
 
     // handle custom modal positioning when invoked via the status bar
     if (!this.invokedViaHotkey) {
@@ -141,7 +141,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     (<any>this.app).keymap.pushScope(this.scope);
     document.body.appendChild(this.containerEl);
     if (!this.invokedViaHotkey) {
-      this.popper = createPopper(document.body.querySelector(".plugin-workspaces-plus.mode-switcher"), this.modalEl, {
+      this.popper = createPopper(document.body.querySelector(".plugin-workspaces-manager.mode-switcher"), this.modalEl, {
         placement: "top-start",
         modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
       });
@@ -234,7 +234,7 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
 
   renderSuggestion(item: FuzzyMatch<any>, el: HTMLElement): void {
     super.renderSuggestion(item, el);
-    const resultEl = document.body.querySelector("div.workspaces-plus-mode-modal div.prompt-results") as HTMLElement;
+    const resultEl = document.body.querySelector("div.workspaces-manager-mode-modal div.prompt-results") as HTMLElement;
     const existingEl = resultEl.querySelector('div[data-workspace-name="' + el.textContent + '"]') as HTMLElement;
     let wrapperEl;
     if (existingEl) {

@@ -114,8 +114,8 @@ export default class WorkspacesPlus extends Plugin {
 
   registerCommands() {
     this.addCommand({
-      id: "open-workspaces-plus",
-      name: "Open Workspaces Plus",
+      id: "open-workspaces-manager",
+      name: "Open Workspaces Manager",
       callback: () => new WorkspacesPlusPluginWorkspaceModal(this, this.settings, true).open(),
     });
     this.addCommand({
@@ -197,8 +197,8 @@ export default class WorkspacesPlus extends Plugin {
       this.storeGlobalSettings();
       this.addStatusBarIndicator("mode");
       this.addCommand({
-        id: "open-workspaces-plus-modes",
-        name: "Open Workspaces Plus Modes",
+        id: "open-workspaces-manager-modes",
+        name: "Open Workspaces Manager Modes",
         callback: () => new WorkspacesPlusPluginModeModal(this, this.settings, true).open(),
       });
       if (this.debug) console.log("toggle load", this.workspacePlugin.activeWorkspace);
@@ -213,7 +213,7 @@ export default class WorkspacesPlus extends Plugin {
     this.applySettings(combinedSettings);
     this.statusBarMode?.detach();
     this.statusBarMode = null;
-    (this.app as any).commands.removeCommand(`${this.manifest.id}:"open-workspaces-plus-modes"`);
+    (this.app as any).commands.removeCommand(`${this.manifest.id}:"open-workspaces-manager-modes"`);
   }
 
   addStatusBarIndicator(modalType: string = "workspace") {

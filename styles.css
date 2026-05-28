@@ -1,29 +1,29 @@
-:where(.workspaces-plus-modal, .workspaces-plus-mode-modal) {
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal) {
   box-shadow: 0px 0px 17px 4px var(--background-modifier-box-shadow);
   z-index: var(--layer-menu);
 }
 
-:where(.workspaces-plus-modal, .workspaces-plus-mode-modal).quick-switch {
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal).quick-switch {
   width: unset;
 }
 
-:where(.workspaces-plus-modal, .workspaces-plus-mode-modal) .prompt-instruction:last-child {
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal) .prompt-instruction:last-child {
   margin-right: 0px;
 }
 
-.status-bar-item.plugin-workspaces-plus.mod-clickable {
+.status-bar-item.plugin-workspaces-manager.mod-clickable {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-:where(.workspaces-plus-modal, .workspaces-plus-mode-modal) div.suggestion-empty button.list-item-part {
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal) div.suggestion-empty button.list-item-part {
   display: block;
   margin: 0 auto;
   width: fit-content;
 }
 
-:where(.workspaces-plus-modal, .workspaces-plus-mode-modal) div.suggestion-empty {
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal) div.suggestion-empty {
   text-align: center;
 }
 
@@ -122,33 +122,33 @@ body.is-mobile .prompt-results:not(.renaming) .workspace-item ~ .platform {
   border: 1px solid transparent;
 }
 
-.workspaces-plus-color-scheme-icon > svg {
+.workspaces-manager-color-scheme-icon > svg {
   fill: var(--text-muted);
 }
 
-.workspaces-plus-color-scheme-icon:hover > svg {
+.workspaces-manager-color-scheme-icon:hover > svg {
   fill: var(--text-normal);
 }
 
-.status-bar .plugin-workspaces-plus .status-bar-item-segment.icon {
+.status-bar .plugin-workspaces-manager .status-bar-item-segment.icon {
   position: absolute;
 }
 
-.status-bar .plugin-workspaces-plus .status-bar-item-segment.name {
+.status-bar .plugin-workspaces-manager .status-bar-item-segment.name {
   margin-left: 1.7em;
 }
 
-.status-bar .plugin-workspaces-plus .icon svg {
+.status-bar .plugin-workspaces-manager .icon svg {
   height: 16px;
   width: 16px;
   vertical-align: text-top;
 }
-.status-bar-item.plugin-workspaces-plus.mode-switcher,
-.status-bar-item.plugin-workspaces-plus.workspace-switcher {
+.status-bar-item.plugin-workspaces-manager.mode-switcher,
+.status-bar-item.plugin-workspaces-manager.workspace-switcher {
   cursor: pointer;
 }
 
-:where(.workspaces-plus-modal, .workspaces-plus-mode-modal) .workspace-item[contenteditable="true"]:focus {
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal) .workspace-item[contenteditable="true"]:focus {
   cursor: text;
   border: 1px solid var(--interactive-accent);
   background-color: var(--background-modifier-form-field);

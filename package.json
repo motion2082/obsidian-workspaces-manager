@@ -1,6 +1,6 @@
 {
-  "name": "obsidian-workspaces-plus",
-  "version": "0.3.1",
+  "name": "obsidian-workspaces-manager",
+  "version": "1.0.0",
   "description": "Quickly switch and manage workspaces",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "release": "auto shipit"
   },
   "keywords": [],
-  "author": "NothingIslost <[@nothingislost](https://github.com/nothingislost)>",
+  "author": "motion2082",
   "license": "MIT",
   "devDependencies": {
     "@popperjs/core": "^2.9.2",

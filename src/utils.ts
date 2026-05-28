@@ -36,7 +36,7 @@ function pathJoin (parts: string[], sep = "/"): string {
 }
 
 export default class Utils {
-  SETTINGS_ATTR = "workspaces-plus:settings-v1";
+  SETTINGS_ATTR = "workspaces-manager:settings-v1";
   workspacePlugin: WorkspacePluginInstance;
   app: App;
   plugin: WorkspacesPlus;

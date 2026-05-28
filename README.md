@@ -1,180 +1,104 @@
-# Workspaces Plus
+# Workspaces Manager
 
-![Artboard-2-3](https://user-images.githubusercontent.com/46250921/133352216-e0a2c9b6-070b-46f7-9a6f-d3a18f0c69b1.png)
+Workspaces Manager is a plugin that expands the functionality of [workspaces](https://help.obsidian.md/Plugins/Workspaces) in [Obsidian](https://obsidian.md/).
 
-Workspaces Plus is a plugin that expands the functionality of [workspaces](https://help.obsidian.md/Plugins/Workspaces) in [Obsidian](https://obsidian.md/).
+> **Note:** This is an independent fork of [Workspaces Plus](https://github.com/nothingislost/obsidian-workspaces-plus) by [NothingIsLost](https://github.com/nothingislost) and [Johnny ✨](https://github.com/jsmorabito), maintained independently by [motion2082](https://github.com/motion2082).
 
 ## Features
 
 ### Workspace Indicator
 
-- current active workspace shown in status bar
-- click on workspace name in status bar to open workspace picker menu
+- Current active workspace shown in status bar
+- Click on workspace name in status bar to open workspace switcher
 - `shift-click` status bar icon or workspace name to save the workspace
-<img src="https://user-images.githubusercontent.com/46250921/133325073-af2d58ec-e8a1-48fb-a48c-792b348235fd.png" width="350">
 
-### Workspace Picker
+### Workspace Switcher
 
-- switch, delete, rename, and create new workspaces
-<img src="https://user-images.githubusercontent.com/46250921/133325287-94a36543-f0ee-4956-9ad5-91c572e5b3c4.png" width="350">
-
-### Workspace Switcher modal
-
-- open with assignable hotkey
-- switch, delete, rename, and create new workspaces
-<img src="https://user-images.githubusercontent.com/46250921/133325396-bc429aa5-696f-4e44-8e78-4a9bd504867e.png" width="400">
+- Switch, delete, rename, and create new workspaces
+- Save icon on the active workspace row for quick saving
+- Open with assignable hotkey
 
 ### Hotkeys
 
-- open Workspaces Plus switcher modal
-- open specific workspace by name
+- Open Workspaces Manager switcher modal
+- Open specific workspace by name
 
 ### Plugin Options
 
-- Toggle keyboard shortcuts on/off for Workspace Picker
+- Toggle keyboard shortcuts on/off for the workspace switcher
 - Toggle workspace delete confirmation on/off
-- Set default workspace switch behavior to always save when switching
+- Auto save the active workspace on layout change
 
 ### Theming Options
 
-- Workspaces Plus adds a data attribute to the HTML document body which can be used to set workspace specific styling
-  - The data attribute is body[data-workspace-name="My Workspace"]
-  - The attribute will be updated upon the loading of any new workspace
+- Workspaces Manager adds a data attribute to the HTML document body for workspace-specific styling
+  - `body[data-workspace-name="My Workspace"]`
+  - Updated whenever a new workspace is loaded
 
 ### Workspace Overrides
 
-- Ability to override pages in a workspace using the templates variables.
+- Override pages loaded in a workspace using template variables
 
 ## How to use
 
-After enabling the plugin from the settings menu, you will see that a workspace icon has been added to the status bar in the lower right corner of the interface. If you are already using workspaces in Obsidian, you will notice that the name of your current active workspace is located next to the that icon.
+After enabling the plugin, a workspace icon will appear in the status bar. If you are already using workspaces in Obsidian, the name of your current active workspace will be shown next to the icon.
 
-> :warning: **Obsidian's core workspace plugin must be activated for Workspaces Plus to work properly**
+> :warning: **Obsidian's core Workspaces plugin must be enabled for Workspaces Manager to work**
 
 ### Creating a Workspace
 
-You can create a workspace through either the Workspace Picker or the Workspace Switcher modal with the same workflow
-
 1. Type your new workspace name into the input field
-2. Use `shift-enter` to create the new workspace
+2. Press `shift-enter` to create and save it
 
 ### Renaming a Workspace
 
-Rename workspaces from the picker or modal by clicking on the pencil icon next to the workspace name
+Click the pencil icon next to any workspace name in the switcher.
 
 ### Deleting a Workspace
 
-Workspaces can be deleted by either using the trach can icon next to the workspaces name or pressing the shortcut `shift-delete` while the workspace is selected in the menu
+Click the trash icon next to a workspace, or press `shift-delete` while the workspace is selected.
 
 ### Opening a Workspace
 
-1. Open the Workspace Switcher via hotkey or click on the workspace icon or name in status bar to open the Workspace Picker
-2. You can open a workspace by clicking on it with your mouse or by pressing enter after navigating to it with the up/down arrows on your keyboard
+1. Open the switcher via hotkey or by clicking the workspace icon/name in the status bar
+2. Click a workspace or press `enter` after navigating with arrow keys
 
 ### Saving Workspaces
 
-- By default, workspaces are not automatically saved when switched
-- You can save a workspace with `shift-click` on the workspace icon or name in the status bar
-- From either switcher menu you can use `shift-enter` to save your current active workspace or `alt-enter` to save your current active workspace and switch to the new one you have selected
-- In the Plugin Options menu (located in Obsidians settings) you can toggle on a setting which will automatically save the active workspace on switch
+- Workspaces are not automatically saved when switching (unless the auto-save option is enabled)
+- `shift-click` the workspace icon or name in the status bar
+- In the switcher, click the save icon on the active workspace row, or use `shift-enter`
+- Enable "Auto save on layout change" in settings to save automatically
 
-### Overriding a page in a Workspace
+### Overriding a Page in a Workspace
 
-- In settings scroll to the bottom and open the workspace you want to modify.
-- In the text box next to the page ID enter the string to load with template variables
-  - Example: 1 Journal/{{date:YYYY}}/{{date:YYYY-MM}}/{{date:YYYY-MM-DD}}.md
-- Switch to the workspace and the page will be loaded with the value from the override with the variables replaced.
-
-## Extra
-
-<details>
-  <summary>Compact Workspace Picker CSS Snippet</summary>
-  
-![image](https://user-images.githubusercontent.com/46250921/135287222-ada674cf-e8e9-4bbf-9d99-07c9892b8e76.png)
-
-  ```css
-.workspaces-plus-modal.quick-switch {
-  padding: 0px;
-  border-radius: 5px;
-  min-width: 13em;
-}
-
-.workspaces-plus-moda.quick-switch .workspace-item {
-  padding-left: 2em;
-  padding-right: 4em;
-  font-size: 0.9em;
-}
-
-.workspaces-plus-modal.quick-switch .prompt-results {
-  padding-top: 0;
-}
-
-.workspaces-plus-modal.quick-switch .prompt-results::-webkit-scrollbar {
-  display: none;
-}
-
-.workspaces-plus-modal.quick-switch .workspace-results {
-  padding: 0px;
-}
-
-.workspaces-plus-modal.quick-switch .workspace-item.is-selected {
-  border-radius: 0px !important;
-}
-
-.workspaces-plus-modal.quick-switch input.prompt-input {
-  font-size: 0.9em;
-  padding: 0px 1em;
-  border-top-left-radius: 5px !important;
-  border-top-right-radius: 5px !important;
-  border-radius: 0px;
-  border: none !important;
-  border-bottom: 1px solid var(--background-modifier-border) !important;
-}
-
-.workspaces-plus-modal.quick-switch input.prompt-input:focus {
-  box-shadow: none;
-  border: none !important;
-  border-bottom: 1px solid var(--background-modifier-border) !important;
-}
-
-.workspaces-plus-modal.quick-switch .delete-workspace {
-  right: 0.7em !important;
-}
-
-.workspaces-plus-modal.quick-switch .rename-workspace {
-  right: 2em !important;
-}
-```
-
-</details>
+1. In settings, open the workspace you want to modify
+2. Enter the file path in the override field, using template variables if needed
+   - Example: `Journal/{{date:YYYY}}/{{date:YYYY-MM}}/{{date:YYYY-MM-DD}}.md`
+3. The page will be loaded with the override applied when switching to that workspace
 
 ## Installation
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/obsidian-workspaces-plus/`.
-- via Obsidian Community Plugins browser
+Copy `main.js`, `styles.css`, and `manifest.json` to your vault at:
+```
+VaultFolder/.obsidian/plugins/workspaces-manager/
+```
 
-## Feedback
+## Feedback & Issues
 
-Share feedback, issues, and ideas on [github](https://github.com/nothingislost/obsidian-workspaces-plus/issues), with our [Workspaces Plus feedback survey](https://airtable.com/shrETC7GS1MOYSTAI), or tag the authors on Discord!
+Report issues and ideas on [GitHub](https://github.com/motion2082/obsidian-workspaces-manager/issues).
 
 ## Credits
 
-- This plugin is being developed by [Johnny ✨](https://github.com/jsmorabito) and [Nothingislost](https://github.com/nothingislost)
-- Workspace Picker and Modal based off of [Obsidian Theme Picker](https://github.com/kenset/obsidian-theme-picker) by [Kenset](https://github.com/kenset)
+- Originally developed by [NothingIsLost](https://github.com/nothingislost) and [Johnny ✨](https://github.com/jsmorabito) as [Workspaces Plus](https://github.com/nothingislost/obsidian-workspaces-plus)
+- Workspace Picker and Modal based on [Obsidian Theme Picker](https://github.com/kenset/obsidian-theme-picker) by [Kenset](https://github.com/kenset)
 
 ## Changelog
 
-- 0.4.17 - Beta
-  - Fix issue with workspaces using tabs so they are parsed correctly for overrides.
-  - Added details on how to use overrides to template files and paths.
+### 1.0.0
+- Forked as Workspaces Manager, running independently
+- Added save icon to active workspace row in the switcher
+- Upgraded TypeScript to 5.x, added ESLint
 
-- 0.3.1
-  - Fix bug in workspace rename logic which was preventing hotkey reassignment
-
-- 0.3.0
-  - Add hotkey support for loading specific workspaces
-    - This feature will create a command for every workspace in your vault, which can then be bound to hotkeys
-    - This feature supports renaming workspaces while maintaining the associated hotkey
-    - You can add these workspace load commands to cMenu and workspace renames will automatically update the cMenu button as well
-  - Add a data attribute to the body of the HTML document which indicates the currently active workspace name.
-    - The selector looks like this: body[data-workspace-name="My Workspace"]
+### 0.3.3 and earlier
+See the [original plugin](https://github.com/nothingislost/obsidian-workspaces-plus) for prior history.
