@@ -178,6 +178,27 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
     const selectedIdx = this.getItems().findIndex(workspace => workspace === this.activeWorkspace);
     this.chooser.setSelectedItem(selectedIdx);
     this.chooser.suggestions[this.chooser.selectedItem]?.scrollIntoViewIfNeeded();
+    this.addNewWorkspaceButton();
+  }
+
+  addNewWorkspaceButton(): void {
+    const btn = this.modalEl.createEl("button", {
+      cls: "workspaces-manager-new-btn",
+      text: "+ New workspace",
+    });
+    btn.addEventListener("click", () => {
+      const name = this.inputEl.value.trim();
+      if (!name) {
+        this.inputEl.focus();
+        this.inputEl.placeholder = "Type a name first…";
+        return;
+      }
+      this.workspacePlugin.saveWorkspace(name);
+      this.chooser.chooser.updateSuggestions();
+      this.setWorkspace(name);
+      new Notice("Created workspace: " + name);
+      this.close();
+    });
   }
 
   onClose(): void {
