@@ -1,7 +1,4 @@
 import {
-  App,
-  Modal,
-  ButtonComponent,
   FuzzySuggestModal,
   WorkspacePluginInstance,
   FuzzyMatch,
@@ -152,12 +149,12 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
       return;
     }
     evt.preventDefault();
-    let item = this.chooser.suggestions.indexOf(itemEl);
+    const item = this.chooser.suggestions.indexOf(itemEl);
     this.chooser.setSelectedItem(item), this.useSelectedItem(evt);
   };
 
   onSuggestionMouseover = function (evt: MouseEvent | KeyboardEvent, itemEl: HTMLElement) {
-    let item = this.chooser.suggestions.indexOf(itemEl);
+    const item = this.chooser.suggestions.indexOf(itemEl);
     this.chooser.setSelectedItem(item);
   };
 
@@ -177,7 +174,7 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
   onOpen(): void {
     super.onOpen();
     this.activeWorkspace = this.workspacePlugin.activeWorkspace;
-    let selectedIdx = this.getItems().findIndex(workspace => workspace === this.activeWorkspace);
+    const selectedIdx = this.getItems().findIndex(workspace => workspace === this.activeWorkspace);
     this.chooser.setSelectedItem(selectedIdx);
     this.chooser.suggestions[this.chooser.selectedItem]?.scrollIntoViewIfNeeded();
   }
@@ -199,7 +196,7 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
     }
     this.chooser.chooser.updateSuggestions();
     targetEl.contentEditable = "false";
-    let selectedIdx = this.getItems().findIndex((workspace: string) => workspace === newName);
+    const selectedIdx = this.getItems().findIndex((workspace: string) => workspace === newName);
     this.chooser.setSelectedItem(selectedIdx, true);
     this.app.workspace.trigger("workspace-rename", newName, originalName);
   }
@@ -210,19 +207,19 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
       this.handleRename(targetEl);
       return;
     }
-    let workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
+    const workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
     if (!this.values && workspaceName && evt.shiftKey) {
       this.saveAndStay();
       // if (!/^mode:/i.test(workspaceName)) this.setWorkspace(workspaceName);
       // this.close();
       return false;
     } else if (!this.chooser.values) return false;
-    let item = this.chooser.values ? this.chooser.values[this.chooser.selectedItem] : workspaceName;
+    const item = this.chooser.values ? this.chooser.values[this.chooser.selectedItem] : workspaceName;
     return void 0 !== item && (this.selectSuggestion(item, evt), true);
   };
 
   saveAndStay(): void {
-    let workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
+    const workspaceName = this.inputEl.value ? this.inputEl.value : this.chooser.values[this.chooser.selectedItem].item;
     this.workspacePlugin.saveWorkspace(workspaceName);
     this.chooser.chooser.updateSuggestions();
     if (!/^mode:/i.test(workspaceName)) this.setWorkspace(workspaceName);
@@ -238,11 +235,11 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
 
   deleteWorkspace(workspaceName: string = null): void {
     if (!workspaceName) {
-      let currentSelection = this.chooser.selectedItem;
+      const currentSelection = this.chooser.selectedItem;
       workspaceName = this.chooser.values[currentSelection].item;
     }
     if (this.settings.showDeletePrompt) {
-      const confirmEl = createConfirmationDialog(this.app, {
+      createConfirmationDialog(this.app, {
         cta: "Delete",
         onAccept: async () => {
           this.doDelete(workspaceName);
@@ -269,9 +266,12 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
     let isMobile;
     try {
       isMobile = this.workspacePlugin.workspaces[workspaceName].left.type == "mobile-drawer";
-    } catch {}
+    } catch { /* empty */ }
     this.addDeleteButton(wrapperEl, workspaceName);
     this.addRenameButton(wrapperEl, el);
+    if (workspaceName === this.workspacePlugin.activeWorkspace) {
+      this.addSaveButton(wrapperEl, workspaceName);
+    }
     this.addPlatformButton(wrapperEl, isMobile ? "mobile" : "desktop");
     this.addDescription(wrapperEl, workspaceName);
   }
@@ -301,6 +301,18 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
     renameIcon.addEventListener("click", event => this.onRenameClick(event, el));
   }
 
+  addSaveButton(wrapperEl: HTMLElement, workspaceName: string): void {
+    const saveIcon = wrapperEl.createDiv("save-workspace");
+    saveIcon.setAttribute("aria-label", "Save workspace");
+    saveIcon.setAttribute("aria-label-position", "top");
+    saveIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="none" d="M0 0h24v24H0z"/><path d="M7 19v-6h10v6h2V7.828L16.172 5H5v14h2zM4 3h13l4 4v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm5 12v4h6v-4H9z"/></svg>`;
+    saveIcon.addEventListener("click", event => {
+      event.stopPropagation();
+      this.workspacePlugin.saveWorkspace(workspaceName);
+      new Notice("Successfully saved workspace: " + workspaceName);
+    });
+  }
+
   addDeleteButton(wrapperEl: HTMLElement, workspaceName: string): void {
     const deleteIcon = wrapperEl.createDiv("delete-workspace");
     deleteIcon.setAttribute("aria-label", "Delete workspace");
@@ -313,7 +325,7 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
     let description;
     try {
       description = this.workspacePlugin.workspaces[workspaceName][SETTINGS_ATTR]["description"];
-    } catch {}
+    } catch { /* empty */ }
     if (description) {
       const descEl = wrapperEl.createDiv("workspace-description");
       descEl.textContent = description;
@@ -357,7 +369,7 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
   };
 
   doDelete(workspaceName: string): void {
-    let currentSelection = this.chooser.selectedItem;
+    const currentSelection = this.chooser.selectedItem;
     this.workspacePlugin.deleteWorkspace(workspaceName);
     this.chooser.chooser.updateSuggestions();
     this.chooser.setSelectedItem(currentSelection - 1, true);
