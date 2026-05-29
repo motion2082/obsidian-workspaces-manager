@@ -169,7 +169,8 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
       });
     }
     this.onOpen();
-    (this.app.workspace as any).pushClosable(this);
+    const ws = this.app.workspace as any;
+    if (typeof ws.pushClosable === "function") ws.pushClosable(this);
   }
 
   onOpen(): void {
