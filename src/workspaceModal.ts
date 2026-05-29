@@ -182,10 +182,12 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
   }
 
   addNewWorkspaceButton(): void {
-    const btn = this.modalEl.createEl("button", {
+    const btn = createEl("button", {
       cls: "workspaces-manager-new-btn",
       text: "+ New workspace",
     });
+    const resultsEl = this.modalEl.querySelector(".prompt-results");
+    this.modalEl.insertBefore(btn, resultsEl);
     btn.addEventListener("click", () => {
       const name = this.inputEl.value.trim();
       if (!name) {

@@ -75,6 +75,15 @@
   opacity: 0;
 }
 
+.workspace-results .save-workspace {
+  display: inline-block;
+  position: absolute;
+  right: 4.6em;
+  margin-top: 0.5em;
+  fill: var(--text-muted);
+  opacity: 0;
+}
+
 .active-workspace {
   display: inline-block;
   position: absolute;
@@ -85,12 +94,14 @@
 }
 
 .rename-workspace,
-.delete-workspace {
+.delete-workspace,
+.save-workspace {
   cursor: pointer;
 }
 
 .rename-workspace:hover,
-.delete-workspace:hover {
+.delete-workspace:hover,
+.save-workspace:hover {
   fill: var(--text-accent-hover);
 }
 
@@ -101,12 +112,14 @@
 
 .prompt-results:not(.renaming) .workspace-item.is-selected ~ .rename-workspace,
 .prompt-results:not(.renaming) .workspace-item.is-selected ~ .delete-workspace,
+.prompt-results:not(.renaming) .workspace-item.is-selected ~ .save-workspace,
 .prompt-results:not(.renaming) .workspace-item.is-selected ~ .platform {
   opacity: 1;
 }
 
 body.is-mobile .prompt-results:not(.renaming) .workspace-item ~ .rename-workspace,
 body.is-mobile .prompt-results:not(.renaming) .workspace-item ~ .delete-workspace,
+body.is-mobile .prompt-results:not(.renaming) .workspace-item ~ .save-workspace,
 body.is-mobile .prompt-results:not(.renaming) .workspace-item ~ .platform {
   opacity: 1;
 }
