@@ -22,6 +22,7 @@
     "@typescript-eslint/parser": "^8.60.0",
     "auto": "^10.31.0",
     "auto-plugin-obsidian": "^0.1.4",
+    "dotenv": "^17.4.2",
     "eslint": "^8.57.0",
     "obsidian": "^1.1.1",
     "rollup": "^2.32.1",
