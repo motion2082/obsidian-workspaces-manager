@@ -102,3 +102,7 @@ Report issues and ideas on [GitHub](https://github.com/motion2082/obsidian-works
 
 ### 0.3.3 and earlier
 See the [original plugin](https://github.com/nothingislost/obsidian-workspaces-plus) for prior history.
+
+## Screenshot
+<img width="424" height="761" alt="image" src="https://github.com/user-attachments/assets/b090523e-ab99-43bf-8061-c3177f84eb5c" />
+
