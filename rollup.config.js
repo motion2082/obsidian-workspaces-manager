@@ -30,7 +30,8 @@ export default {
     nodeResolve({browser: true}),
     commonjs(),
     copy({
-      watch: ["styles.css", "manifest*.json"],
+      // only watch in dev; in production the watcher keeps the process alive and the build never exits
+      watch: isProd ? false : ["styles.css", "manifest*.json"],
       targets: [
         { src: 'manifest.json', dest: outdir },
         { src: 'manifest-beta.json', dest: outdir },

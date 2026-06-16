@@ -1,7 +1,7 @@
 {
   "id": "workspaces-manager",
   "name": "Workspaces Manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "1.0.0",
   "description": "Quickly switch and manage workspaces",
   "author": "motion2082",
