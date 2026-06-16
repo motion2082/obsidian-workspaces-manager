@@ -17,7 +17,6 @@ data.json
 .env
 
 .DS_Store
-.github
 .hotreload
 *.zip
 *.code-workspace
