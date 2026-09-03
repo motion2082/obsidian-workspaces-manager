@@ -160,15 +160,22 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
   };
 
   open(): void {
-    (<any>this.app).keymap.pushScope(this.scope);
-    document.body.appendChild(this.containerEl);
+    // delegate to the real Modal#open so all of its internal bookkeeping (focus/selection
+    // restore state, the dimmed-background class, the global open-modal registry that Escape
+    // and click-outside handling rely on, etc.) actually runs - a previous hand-rolled
+    // reimplementation here silently drifted from Obsidian's internals and left some of that
+    // state uninitialized, which is how the close button ended up dead.
+    super.open();
     if (!this.invokedViaHotkey) {
-      this.popper = createPopper(document.body.querySelector(".plugin-workspaces-manager"), this.modalEl, {
-        placement: "top-start",
-        modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
-      });
+      this.popper = createPopper(
+        document.body.querySelector(".plugin-workspaces-manager.workspace-switcher"),
+        this.modalEl,
+        {
+          placement: "top-start",
+          modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
+        }
+      );
     }
-    this.onOpen();
     const ws = this.app.workspace as any;
     if (typeof ws.pushClosable === "function") ws.pushClosable(this);
   }
@@ -182,7 +189,9 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
   }
 
   onClose(): void {
-    (<any>this.app).keymap.popScope(this.scope);
+    // Modal#close already pops this.scope before calling onClose(); popping it again here
+    // was a harmless-looking no-op on the current build but relied on undocumented internals
+    // that have shifted before (see the pushClosable removal above).
     super.onClose();
   }
 
