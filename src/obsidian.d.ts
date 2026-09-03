@@ -84,7 +84,7 @@ declare module "obsidian" {
   export interface WorkspacePluginInstance extends PluginInstance {
     deleteWorkspace(workspaceName: string): void;
     saveWorkspace(workspaceName: string): void;
-    loadWorkspace(workspaceName: string): void;
+    loadWorkspace(workspaceName: string): Promise<void>;
     setActiveWorkspace(workspaceName: string): void;
     plugin: PluginInstance;
     activeWorkspace: string;

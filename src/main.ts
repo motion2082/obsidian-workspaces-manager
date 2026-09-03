@@ -11,6 +11,11 @@ import { WorkspacesPlusPluginModeModal } from "./modeModal";
 import { around } from "monkey-around";
 import Utils from "./utils";
 
+// how long to keep suppressing auto save after a load reports that it finished
+const LOAD_SETTLE_DELAY = 500;
+// upper bound on the suppression window if a load never reports back at all
+const LOAD_GUARD_BACKSTOP = 30000;
+
 export default class WorkspacesPlus extends Plugin {
   settings: WorkspacesPlusSettings;
   workspacePlugin: WorkspacePluginInstance;
@@ -24,6 +29,7 @@ export default class WorkspacesPlus extends Plugin {
   isNativePluginEnabled: boolean;
   utils: Utils;
   registeredWorkspaceCommands: Set<string> = new Set();
+  workspaceLoadingTimeout: number;
 
   async onload() {
     this.debug = false;
@@ -486,11 +492,22 @@ export default class WorkspacesPlus extends Plugin {
     }
   }
 
-  setLoadingStatus(): void {
+  // Suppresses auto save while a workspace is being loaded. Returns a callback that the
+  // loader invokes once the layout has actually settled, so heavy workspaces are no longer
+  // cut off by a fixed timer. The timeout is only a backstop against a load that never
+  // completes, and a short settle delay swallows the trailing layout-change events.
+  setLoadingStatus(): () => void {
     this.workspaceLoading = true;
-    setTimeout(() => {
+    window.clearTimeout(this.workspaceLoadingTimeout);
+    this.workspaceLoadingTimeout = window.setTimeout(() => {
       this.workspaceLoading = false;
-    }, 2000);
+    }, LOAD_GUARD_BACKSTOP);
+    return () => {
+      window.clearTimeout(this.workspaceLoadingTimeout);
+      this.workspaceLoadingTimeout = window.setTimeout(() => {
+        this.workspaceLoading = false;
+      }, LOAD_SETTLE_DELAY);
+    };
   }
 
   updateGlobalSettings(): void {
@@ -532,35 +549,39 @@ export default class WorkspacesPlus extends Plugin {
           };
         },
         loadWorkspace(old) {
-          return function loadWorkspace(workspaceName, ...etc) {
+          return async function loadWorkspace(workspaceName, ...etc) {
             if (!workspaceName || !plugin.isNativePluginEnabled) return;
-            plugin.setLoadingStatus();
-            let result;
-            if (plugin.settings.workspaceSettings && plugin.utils.isMode(workspaceName)) {
-              // if the workspace being loaded is a mode, invoke the mode loader
-              const modeName = workspaceName;
-              workspaceName = plugin.utils.activeWorkspace;
-              result = plugin.utils.loadMode(workspaceName, modeName);
-            } else {
+            const loadComplete = plugin.setLoadingStatus();
+            try {
+              if (plugin.settings.workspaceSettings && plugin.utils.isMode(workspaceName)) {
+                // if the workspace being loaded is a mode, invoke the mode loader
+                const modeName = workspaceName;
+                workspaceName = plugin.utils.activeWorkspace;
+                plugin.utils.loadMode(workspaceName, modeName);
+                this.app.workspace.trigger("workspace-load", workspaceName);
+                return;
+              }
+
               // result = old.call(this, workspaceName, ...etc);
               const workspace = this.workspaces[workspaceName];
-              if (workspace) {
-                // TODO: Ensure this stays in sync with the native Obsidian function
-                this.activeWorkspace = workspaceName;
-                try {
-                  plugin.utils.applyFileOverrides(workspaceName, workspace).then(() => {
-                    this.app.workspace.changeLayout(workspace);
-                    this.saveData();
-                  });
-                } catch {
-                  console.log("failed to apply overrides");
-                  this.app.workspace.changeLayout(workspace);
-                  this.saveData();
-                }
+              if (!workspace) return;
+              // TODO: Ensure this stays in sync with the native Obsidian function
+              this.activeWorkspace = workspaceName;
+              try {
+                await plugin.utils.applyFileOverrides(workspaceName, workspace);
+              } catch (e) {
+                // a bad override shouldn't stop the workspace from loading
+                console.error("Workspaces Manager: failed to apply file overrides", e);
               }
+              // NOTE: this has to fire before changeLayout. onWorkspaceLoad writes the saved
+              // file explorer fold state to local storage, and the explorer only reads it
+              // while changeLayout is rebuilding it.
+              this.app.workspace.trigger("workspace-load", workspaceName);
+              await this.app.workspace.changeLayout(workspace);
+              this.saveData();
+            } finally {
+              loadComplete();
             }
-            this.app.workspace.trigger("workspace-load", workspaceName);
-            return result;
           };
         },
       })
