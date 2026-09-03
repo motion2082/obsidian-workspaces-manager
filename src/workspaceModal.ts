@@ -257,8 +257,8 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
   renderSuggestion(item: FuzzyMatch<any>, el: HTMLElement): void {
     super.renderSuggestion(item, el);
     const workspaceName = el.textContent;
-    const resultEl = document.body.querySelector("div.workspaces-manager-modal div.prompt-results") as HTMLElement;
-    const existingEl = resultEl.querySelector('div[data-workspace-name="' + workspaceName + '"]') as HTMLElement;
+    const resultEl = this.modalEl.querySelector("div.prompt-results") as HTMLElement;
+    const existingEl = this.findWrapper(resultEl, workspaceName);
     let wrapperEl;
     if (existingEl) {
       wrapperEl = existingEl;
@@ -274,6 +274,15 @@ export class WorkspacesPlusPluginWorkspaceModal extends FuzzySuggestModal<string
     this.addSaveButton(wrapperEl, workspaceName);
     this.addPlatformButton(wrapperEl, isMobile ? "mobile" : "desktop");
     this.addDescription(wrapperEl, workspaceName);
+  }
+
+  // Look up an already rendered wrapper by name. Done by scanning rather than with an
+  // attribute selector so that names containing quotes or backslashes can't break the query.
+  findWrapper(resultEl: HTMLElement, workspaceName: string): HTMLElement {
+    const itemEl = Array.from(resultEl.querySelectorAll<HTMLElement>(".workspace-item")).find(
+      el => el.dataset.workspaceName === workspaceName
+    );
+    return itemEl?.parentElement as HTMLElement;
   }
 
   wrapSuggestion(childEl: HTMLElement, parentEl: HTMLElement): HTMLElement {

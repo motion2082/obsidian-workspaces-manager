@@ -23,6 +23,7 @@ export default class WorkspacesPlus extends Plugin {
   nativeWorkspaceRibbonItem: HTMLElement;
   isNativePluginEnabled: boolean;
   utils: Utils;
+  registeredWorkspaceCommands: Set<string> = new Set();
 
   async onload() {
     this.debug = false;
@@ -213,7 +214,7 @@ export default class WorkspacesPlus extends Plugin {
     this.applySettings(combinedSettings);
     this.statusBarMode?.detach();
     this.statusBarMode = null;
-    (this.app as any).commands.removeCommand(`${this.manifest.id}:"open-workspaces-manager-modes"`);
+    (this.app as any).commands.removeCommand(`${this.manifest.id}:open-workspaces-manager-modes`);
   }
 
   addStatusBarIndicator(modalType: string = "workspace") {
@@ -323,6 +324,7 @@ export default class WorkspacesPlus extends Plugin {
   onWorkspaceRename = (name: string, oldName: string) => {
     this.setWorkspaceName();
     // remove the old command
+    this.registeredWorkspaceCommands.delete(oldName);
     (this.app as any).commands.removeCommand(`${this.manifest.id}:${oldName}`);
     const hotkeys = (this.app as any).hotkeyManager.getHotkeys(`${this.manifest.id}:${oldName}`);
     // register the new command
@@ -352,6 +354,7 @@ export default class WorkspacesPlus extends Plugin {
   onWorkspaceDelete = (workspaceName: string) => {
     this.setWorkspaceName();
     const id = this.manifest.id + ":" + workspaceName;
+    this.registeredWorkspaceCommands.delete(workspaceName);
     (this.app as any).commands.removeCommand(id);
     const hotkeys = (this.app as any).hotkeyManager.getHotkeys(id);
     if (hotkeys) {
@@ -445,6 +448,12 @@ export default class WorkspacesPlus extends Plugin {
   }, 500);
 
   applySettings(settings: any) {
+    // applySettings replaces app.vault.config wholesale and persists it, so an empty or
+    // missing settings object would wipe the vault's core configuration
+    if (!settings || Object.keys(settings).length === 0) {
+      console.warn("Workspaces Manager: refusing to apply an empty settings object to the vault config");
+      return;
+    }
     (<any>this.app).disableCssTransition();
     // this emulates what Obsidian does when loading the core settings
     this.app.vault.config = settings;
@@ -463,6 +472,10 @@ export default class WorkspacesPlus extends Plugin {
   registerWorkspaceHotkeys() {
     const workspaceNames = Object.keys(this.workspacePlugin.workspaces);
     for (const workspaceName of workspaceNames) {
+      // addCommand queues a new unregister callback on every call, and this runs on every
+      // workspace save and rename, so only register a given workspace once per session
+      if (this.registeredWorkspaceCommands.has(workspaceName)) continue;
+      this.registeredWorkspaceCommands.add(workspaceName);
       this.addCommand({
         id: workspaceName,
         name: `Load: ${workspaceName}`,

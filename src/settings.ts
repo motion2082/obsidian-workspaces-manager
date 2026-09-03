@@ -35,10 +35,11 @@ export const DEFAULT_SETTINGS: WorkspacesPlusSettings = {
 };
 
 function getChildIds (split: any, leafs: any[] = []): any[] {
+  if (!split) return leafs;
   if (split.type === "leaf") {
-    leafs.push({ id: split.id, file: split.state.state.file, mode: split.state.state.mode });
+    leafs.push({ id: split.id, file: split.state?.state?.file, mode: split.state?.state?.mode });
   } else if (split.type === "split" || split.type === "tabs") {
-    split.children.forEach((child: any) => {
+    (split.children || []).forEach((child: any) => {
       getChildIds(child, leafs);
     });
   }
@@ -274,6 +275,7 @@ export class WorkspacesPlusSettingsTab extends PluginSettingTab {
               if (!workspaceSettings.fileOverrides) workspaceSettings.fileOverrides = {};
               if (overrideFile) workspaceSettings.fileOverrides[leaf.id] = overrideFile;
               else delete workspaceSettings.fileOverrides[leaf.id];
+              this.plugin.workspacePlugin.saveData();
             });
           });
       });

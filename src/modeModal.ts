@@ -235,8 +235,8 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
 
   renderSuggestion(item: FuzzyMatch<any>, el: HTMLElement): void {
     super.renderSuggestion(item, el);
-    const resultEl = document.body.querySelector("div.workspaces-manager-mode-modal div.prompt-results") as HTMLElement;
-    const existingEl = resultEl.querySelector('div[data-workspace-name="' + el.textContent + '"]') as HTMLElement;
+    const resultEl = this.modalEl.querySelector("div.prompt-results") as HTMLElement;
+    const existingEl = this.findWrapper(resultEl, el.textContent);
     let wrapperEl;
     if (existingEl) {
       wrapperEl = existingEl;
@@ -245,6 +245,15 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     }
     this.addDeleteButton(wrapperEl);
     this.addRenameButton(wrapperEl, el);
+  }
+
+  // Look up an already rendered wrapper by name. Done by scanning rather than with an
+  // attribute selector so that names containing quotes or backslashes can't break the query.
+  findWrapper(resultEl: HTMLElement, workspaceName: string): HTMLElement {
+    const itemEl = Array.from(resultEl.querySelectorAll<HTMLElement>(".workspace-item")).find(
+      el => el.dataset.workspaceName === workspaceName
+    );
+    return itemEl?.parentElement as HTMLElement;
   }
 
   wrapSuggestion(childEl: HTMLElement, parentEl: HTMLElement): HTMLElement {
@@ -315,13 +324,14 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     this.chooser.chooser.updateSuggestions();
     this.chooser.setSelectedItem(currentSelection - 1, true);
     this.plugin.onWorkspaceDelete(workspaceName);
-    for (const [workspaceName, workspace] of Object.entries(this.workspacePlugin.workspaces)) {
+    // clear the deleted mode from any workspace that was still pointing at it
+    for (const workspace of Object.values(this.workspacePlugin.workspaces)) {
       const settings = workspace[SETTINGS_ATTR];
-      const mode = settings ? settings["mode"] : null;
-      if (mode && mode == workspaceName) {
-        workspace[SETTINGS_ATTR]["mode"] = null;
+      if (settings && settings["mode"] === workspaceName) {
+        settings["mode"] = null;
       }
     }
+    this.workspacePlugin.saveData();
   }
 
   getItems(): string[] {
