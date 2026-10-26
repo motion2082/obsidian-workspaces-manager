@@ -3,6 +3,12 @@
   z-index: var(--layer-menu);
 }
 
+:where(.workspaces-manager-modal, .workspaces-manager-mode-modal) .search-input-clear-button {
+  cursor: pointer;
+  z-index: 10;
+  pointer-events: auto;
+}
+
 :where(.workspaces-manager-modal, .workspaces-manager-mode-modal).quick-switch {
   width: unset;
 }

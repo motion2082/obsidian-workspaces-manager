@@ -48,6 +48,17 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     this.modalEl.on("input", ".prompt-input", this.onInputChanged.bind(this));
     this.modalEl.on("click", ".workspace-item", this.onSuggestionClick.bind(this));
     this.modalEl.on("mousemove", ".workspace-item", this.onSuggestionMouseover.bind(this));
+    this.modalEl.on("click", ".search-input-clear-button", (evt: MouseEvent) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      if (this.inputEl && this.inputEl.value) {
+        this.inputEl.value = "";
+        this.inputEl.dispatchEvent(new Event("input"));
+        this.onInputChanged();
+      } else {
+        this.close();
+      }
+    });
 
     // clone the input element as a hacky way to get rid of the obsidian onInput handler
     // const inputElClone = this.inputEl.cloneNode() as HTMLInputElement;
@@ -137,7 +148,24 @@ export class WorkspacesPlusPluginModeModal extends FuzzySuggestModal<string> {
     this.chooser.setSelectedItem(item);
   };
 
+  close(): void {
+    if (this.popper) {
+      this.popper.destroy();
+      this.popper = null;
+    }
+    (<any>this).isOpen = false;
+    try {
+      super.close();
+    } catch {
+      /* empty */
+    }
+    if (this.containerEl && this.containerEl.parentNode) {
+      this.containerEl.parentNode.removeChild(this.containerEl);
+    }
+  }
+
   open(): void {
+    (<any>this).isOpen = true;
     (<any>this.app).keymap.pushScope(this.scope);
     document.body.appendChild(this.containerEl);
     if (!this.invokedViaHotkey) {

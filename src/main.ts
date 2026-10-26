@@ -519,7 +519,7 @@ export default class WorkspacesPlus extends Plugin {
           };
         },
         loadWorkspace(old) {
-          return function loadWorkspace(workspaceName, ...etc) {
+          return async function loadWorkspace(workspaceName, ...etc) {
             if (!workspaceName || !plugin.isNativePluginEnabled) return;
             plugin.setLoadingStatus();
             let result;
@@ -527,24 +527,17 @@ export default class WorkspacesPlus extends Plugin {
               // if the workspace being loaded is a mode, invoke the mode loader
               const modeName = workspaceName;
               workspaceName = plugin.utils.activeWorkspace;
-              result = plugin.utils.loadMode(workspaceName, modeName);
+              result = await plugin.utils.loadMode(workspaceName, modeName);
             } else {
-              // result = old.call(this, workspaceName, ...etc);
               const workspace = this.workspaces[workspaceName];
-              if (workspace) {
-                // TODO: Ensure this stays in sync with the native Obsidian function
-                this.activeWorkspace = workspaceName;
+              if (workspace && plugin.settings.workspaceSettings) {
                 try {
-                  plugin.utils.applyFileOverrides(workspaceName, workspace).then(() => {
-                    this.app.workspace.changeLayout(workspace);
-                    this.saveData();
-                  });
-                } catch {
-                  console.log("failed to apply overrides");
-                  this.app.workspace.changeLayout(workspace);
-                  this.saveData();
+                  await plugin.utils.applyFileOverrides(workspaceName, workspace);
+                } catch (e) {
+                  console.log("failed to apply overrides", e);
                 }
               }
+              result = await old.call(this, workspaceName, ...etc);
             }
             this.app.workspace.trigger("workspace-load", workspaceName);
             return result;
